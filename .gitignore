@@ -9,6 +9,16 @@ dist/
 web-build/
 expo-env.d.ts
 
+skills-lock.json
+
+.agent/
+
+.claude/
+
+.agents/
+
+.env
+
 # Native
 .kotlin/
 *.orig.*
