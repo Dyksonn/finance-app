@@ -1,4 +1,5 @@
 /* eslint-disable react/display-name */
+import { neutral } from "@/theme/colors";
 import { BlurView, type BlurViewProps } from "expo-blur";
 import React, { memo, useEffect } from "react";
 import { StyleSheet, Text, View, type ViewStyle } from "react-native";
@@ -30,7 +31,7 @@ export const FadeText: React.FC<FadeTextProps> = memo<FadeTextProps>(
     opacityRange = [0, 0.5, 1],
     fontSize = 32,
     fontWeight = "600",
-    color = "#ffffff",
+    color = neutral[50],
     textAlign = "center",
     containerStyle,
     style,

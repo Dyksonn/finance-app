@@ -39,6 +39,8 @@ import { scheduleOnRN } from "react-native-worklets";
 // @ts-ignore
 import type { BottomSheetProps, BottomSheetMethods } from "./types";
 
+import { useThemeColors } from "@/components/organisms/theme-switch/hooks";
+import { neutral } from "@/theme/colors";
 import {
   DEFAULT_SPRING_CONFIG,
   DEFAULT_TIMING_CONFIG,
@@ -67,13 +69,16 @@ const BottomSheetComponent = forwardRef<BottomSheetMethods, BottomSheetProps>(
       enableOverDrag = true,
       enableHapticFeedback = true,
       snapVelocityThreshold = 500,
-      backgroundColor = "#FFFFFF",
+      backgroundColor,
       borderRadius = 24,
       contentContainerStyle,
       enableDynamicSizing = false,
     },
     ref,
   ) => {
+    const colors = useThemeColors();
+    const effectiveBg = backgroundColor ?? colors.card;
+
     const parsedSnapPoints = useMemo<number[]>(
       () => snapPoints.map(parseSnapPoint),
       [snapPoints],
@@ -490,11 +495,11 @@ const BottomSheetComponent = forwardRef<BottomSheetMethods, BottomSheetProps>(
       >
     >(
       () => ({
-        backgroundColor,
+        backgroundColor: effectiveBg,
         borderTopLeftRadius: borderRadius,
         borderTopRightRadius: borderRadius,
       }),
-      [backgroundColor, borderRadius],
+      [effectiveBg, borderRadius],
     );
 
     const scrollProps: Partial<ScrollViewProps> = useMemo(
@@ -634,7 +639,7 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#000000",
+    backgroundColor: neutral[900],
   },
   sheet: {
     position: "absolute",
@@ -659,7 +664,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "#D1D5DB",
+    backgroundColor: neutral[300],
   },
   contentWrapper: {
     overflow: "hidden",

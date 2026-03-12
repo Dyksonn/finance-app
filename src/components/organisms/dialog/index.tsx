@@ -1,3 +1,4 @@
+import { useThemeColors } from "@/components/organisms/theme-switch/hooks";
 import { BlurView } from "expo-blur";
 import React, {
   createContext,
@@ -99,10 +100,12 @@ const DialogTrigger: React.FC<DialogTriggerProps> = ({ children, asChild }) => {
 const DialogBackdrop: React.FC<DialogBackdropProps> = ({
   children,
   blurAmount = 20,
-  backgroundColor = "rgba(0, 0, 0, 0.5)",
+  backgroundColor,
   blurType = "dark",
 }) => {
+  const colors = useThemeColors();
   const { animationProgress } = useDialogContext();
+  const effectiveBg = backgroundColor ?? colors.overlay;
 
   const backdropAnimatedStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
@@ -140,7 +143,7 @@ const DialogBackdrop: React.FC<DialogBackdropProps> = ({
         )}
         tint={blurType}
       />
-      <View style={[StyleSheet.absoluteFill, { backgroundColor }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: effectiveBg }]} />
       {children}
     </Animated.View>
   );

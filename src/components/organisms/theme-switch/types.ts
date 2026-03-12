@@ -43,6 +43,7 @@ interface ThemeColors {
   success: string;
   warning: string;
   info: string;
+  overlay: string;
 }
 
 interface ThemeConfig {

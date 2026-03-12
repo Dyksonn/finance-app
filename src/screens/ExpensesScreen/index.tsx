@@ -1,38 +1,51 @@
-import { useRef, useState, useCallback } from 'react';
+import AnimatedInput from "@/components/base/animated-input-bar";
+import { Button } from "@/components/base/button";
+import { StaggeredText } from "@/components/organisms/animated-text";
+import { Checkbox } from "@/components/organisms/check-box";
+import { FadeText } from "@/components/organisms/fade-text";
+import { useTheme } from "@/components/organisms/theme-switch/hooks";
+import type { ThemeColors } from "@/components/organisms/theme-switch/types";
+import { BottomSheet } from "@/components/templates/bottom-sheet";
+import { useBottomSheet } from "@/components/templates/bottom-sheet-stack";
+import type { BottomSheetMethods } from "@/components/templates/bottom-sheet/types";
 import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Pressable,
-  Alert,
-  SafeAreaView,
-  Keyboard,
-} from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import { FadeText } from '@/components/organisms/fade-text';
-import { StaggeredText } from '@/components/organisms/animated-text';
-import { Button } from '@/components/base/button';
-import AnimatedInput from '@/components/base/animated-input-bar';
-import { Checkbox } from '@/components/organisms/check-box';
-import { BottomSheet } from '@/components/templates/bottom-sheet';
-import { useBottomSheet } from '@/components/templates/bottom-sheet-stack';
-import { useTheme } from '@/components/organisms/theme-switch/hooks';
-import type { BottomSheetMethods } from '@/components/templates/bottom-sheet/types';
-import type { ThemeColors } from '@/components/organisms/theme-switch/types';
+    addExpense,
+    deleteExpense,
+    getCompanies,
+    getExpenses,
+    updateExpense,
+} from "@/storage/asyncStorage";
+import type { Company, Expense, ExpenseCategory } from "@/types";
+import { CATEGORY_ICONS, CATEGORY_LABELS } from "@/types";
 import {
-  getExpenses,
-  getCompanies,
-  addExpense,
-  updateExpense,
-  deleteExpense,
-} from '@/storage/asyncStorage';
-import { generateId, formatCurrency, getNextMonth, maskCurrency, parseMaskedCurrency, numberToMasked } from '@/utils/helpers';
-import type { Company, Expense, ExpenseCategory } from '@/types';
-import { CATEGORY_ICONS, CATEGORY_LABELS } from '@/types';
+    formatCurrency,
+    generateId,
+    getNextMonth,
+    maskCurrency,
+    numberToMasked,
+    parseMaskedCurrency,
+} from "@/utils/helpers";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useRef, useState } from "react";
+import {
+    Alert,
+    Keyboard,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ALL_CATEGORIES: ExpenseCategory[] = [
-  'moradia', 'alimentacao', 'transporte', 'saude',
-  'educacao', 'lazer', 'servicos', 'outros',
+  "moradia",
+  "alimentacao",
+  "transporte",
+  "saude",
+  "educacao",
+  "lazer",
+  "servicos",
+  "outros",
 ];
 
 type FormState = {
@@ -42,12 +55,12 @@ type FormState = {
 };
 
 const EMPTY_FORM: FormState = {
-  name: '',
-  amount: '',
-  category: 'outros',
+  name: "",
+  amount: "",
+  category: "outros",
 };
 
-export default function GastosScreen() {
+export default function ExpensesScreen() {
   const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetMethods>(null);
   const { present: presentSheet, dismiss: dismissSheet } = useBottomSheet();
@@ -136,13 +149,15 @@ export default function GastosScreen() {
 
     presentSheet(
       <BottomSheet
-        snapPoints={['55%']}
+        snapPoints={["55%"]}
         backgroundColor={colors.card}
         onClose={dismissSheet}
       >
-        <View style={[styles.catSheetContent, { backgroundColor: colors.card }]}>
+        <View
+          style={[styles.catSheetContent, { backgroundColor: colors.card }]}
+        >
           <FadeText
-            inputs={['Selecionar Categoria']}
+            inputs={["Selecionar Categoria"]}
             fontSize={17}
             fontWeight="700"
             color={colors.text}
@@ -164,8 +179,8 @@ export default function GastosScreen() {
                     {
                       borderColor: selected ? colors.primary : colors.border,
                       backgroundColor: selected
-                        ? colors.primary + '18'
-                        : 'transparent',
+                        ? colors.primary + "18"
+                        : "transparent",
                     },
                   ]}
                 >
@@ -173,13 +188,13 @@ export default function GastosScreen() {
                     inputs={[`${CATEGORY_ICONS[cat]}  ${CATEGORY_LABELS[cat]}`]}
                     fontSize={15}
                     color={selected ? colors.primary : colors.text}
-                    fontWeight={selected ? '700' : '400'}
+                    fontWeight={selected ? "700" : "400"}
                     wordDelay={0}
                     duration={200}
                   />
                   {selected && (
                     <FadeText
-                      inputs={['✓']}
+                      inputs={["✓"]}
                       fontSize={16}
                       color={colors.primary}
                       fontWeight="700"
@@ -228,11 +243,11 @@ export default function GastosScreen() {
   }
 
   async function handleDelete(id: string) {
-    Alert.alert('Excluir gasto', 'Tem certeza?', [
-      { text: 'Cancelar', style: 'cancel' },
+    Alert.alert("Excluir gasto", "Tem certeza?", [
+      { text: "Cancelar", style: "cancel" },
       {
-        text: 'Excluir',
-        style: 'destructive',
+        text: "Excluir",
+        style: "destructive",
         onPress: async () => {
           const updated = await deleteExpense(id);
           setExpenses(updated);
@@ -272,13 +287,13 @@ export default function GastosScreen() {
             style={[
               styles.summaryCard,
               {
-                backgroundColor: colors.destructive + '18',
-                borderColor: colors.destructive + '30',
+                backgroundColor: colors.destructive + "18",
+                borderColor: colors.destructive + "30",
               },
             ]}
           >
             <FadeText
-              inputs={['Total Gastos']}
+              inputs={["Total Gastos"]}
               fontSize={11}
               color={colors.destructive}
               fontWeight="700"
@@ -296,14 +311,14 @@ export default function GastosScreen() {
               styles.summaryCard,
               {
                 backgroundColor:
-                  leftover >= 0 ? colors.success + '18' : colors.warning + '18',
+                  leftover >= 0 ? colors.success + "18" : colors.warning + "18",
                 borderColor:
-                  leftover >= 0 ? colors.success + '30' : colors.warning + '30',
+                  leftover >= 0 ? colors.success + "30" : colors.warning + "30",
               },
             ]}
           >
             <FadeText
-              inputs={['Sobra Estimada']}
+              inputs={["Sobra Estimada"]}
               fontSize={11}
               color={leftover >= 0 ? colors.success : colors.warning}
               fontWeight="700"
@@ -342,7 +357,7 @@ export default function GastosScreen() {
         {byCategory.length > 0 && (
           <View style={styles.categorySection}>
             <FadeText
-              inputs={['POR CATEGORIA']}
+              inputs={["POR CATEGORIA"]}
               fontSize={11}
               color={colors.mutedForeground}
               fontWeight="700"
@@ -355,7 +370,10 @@ export default function GastosScreen() {
                   key={cat}
                   style={[
                     styles.catChip,
-                    { backgroundColor: colors.muted, borderColor: colors.border },
+                    {
+                      backgroundColor: colors.muted,
+                      borderColor: colors.border,
+                    },
                   ]}
                 >
                   <FadeText
@@ -403,19 +421,19 @@ export default function GastosScreen() {
         {monthExpenses.length === 0 ? (
           <View style={styles.empty}>
             <FadeText
-              inputs={['📋']}
+              inputs={["📋"]}
               fontSize={48}
               color={colors.mutedForeground}
               wordDelay={0}
             />
             <FadeText
-              inputs={['Nenhum gasto cadastrado']}
+              inputs={["Nenhum gasto cadastrado"]}
               fontSize={16}
               color={colors.mutedForeground}
               wordDelay={100}
             />
             <FadeText
-              inputs={['Toque no + para adicionar']}
+              inputs={["Toque no + para adicionar"]}
               fontSize={13}
               color={colors.mutedForeground}
               wordDelay={120}
@@ -426,7 +444,7 @@ export default function GastosScreen() {
             {unpaid.length > 0 && (
               <View style={styles.listSection}>
                 <FadeText
-                  inputs={['A PAGAR']}
+                  inputs={["A PAGAR"]}
                   fontSize={11}
                   color={colors.destructive}
                   fontWeight="700"
@@ -448,7 +466,7 @@ export default function GastosScreen() {
             {paid.length > 0 && (
               <View style={styles.listSection}>
                 <FadeText
-                  inputs={['PAGAS']}
+                  inputs={["PAGAS"]}
                   fontSize={11}
                   color={colors.success}
                   fontWeight="700"
@@ -482,9 +500,9 @@ export default function GastosScreen() {
         ]}
       >
         <FadeText
-          inputs={['+']}
+          inputs={["+"]}
           fontSize={28}
-          color="#fff"
+          color={colors.primaryForeground}
           fontWeight="300"
           wordDelay={0}
           duration={0}
@@ -494,13 +512,13 @@ export default function GastosScreen() {
       {/* BottomSheet – add/edit expense */}
       <BottomSheet
         ref={sheetRef}
-        snapPoints={['65%']}
+        snapPoints={["65%"]}
         backgroundColor={colors.card}
         onClose={handleClose}
       >
         <View style={[styles.sheetContent, { backgroundColor: colors.card }]}>
           <FadeText
-            inputs={[editingId ? 'Editar Gasto' : 'Novo Gasto']}
+            inputs={[editingId ? "Editar Gasto" : "Novo Gasto"]}
             fontSize={18}
             fontWeight="700"
             color={colors.text}
@@ -509,7 +527,7 @@ export default function GastosScreen() {
           />
 
           <AnimatedInput
-            placeholders={['Nome do gasto']}
+            placeholders={["Nome do gasto"]}
             value={form.name}
             onChangeText={(v) => setForm((f) => ({ ...f, name: v }))}
             inputWrapperStyle={[
@@ -521,9 +539,11 @@ export default function GastosScreen() {
           />
 
           <AnimatedInput
-            placeholders={['Valor (R$)']}
+            placeholders={["Valor (R$)"]}
             value={form.amount}
-            onChangeText={(v) => setForm((f) => ({ ...f, amount: maskCurrency(v) }))}
+            onChangeText={(v) =>
+              setForm((f) => ({ ...f, amount: maskCurrency(v) }))
+            }
             keyboardType="decimal-pad"
             inputWrapperStyle={[
               styles.inputWrapper,
@@ -551,7 +571,7 @@ export default function GastosScreen() {
               duration={200}
             />
             <FadeText
-              inputs={['›']}
+              inputs={["›"]}
               fontSize={20}
               color={colors.textSecondary}
               wordDelay={0}
@@ -567,9 +587,9 @@ export default function GastosScreen() {
               height={48}
             >
               <FadeText
-                inputs={[editingId ? 'Salvar Alterações' : 'Adicionar Gasto']}
+                inputs={[editingId ? "Salvar Alterações" : "Adicionar Gasto"]}
                 fontSize={14}
-                color="#fff"
+                color={colors.primaryForeground}
                 fontWeight="700"
                 wordDelay={0}
                 duration={0}
@@ -582,7 +602,7 @@ export default function GastosScreen() {
               height={48}
             >
               <FadeText
-                inputs={['Cancelar']}
+                inputs={["Cancelar"]}
                 fontSize={14}
                 color={colors.textSecondary}
                 fontWeight="600"
@@ -663,8 +683,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: 24, paddingTop: 20 },
   header: { marginBottom: 16, gap: 4 },
-  title: { fontSize: 28, fontWeight: '700', letterSpacing: -0.5 },
-  summaryRow: { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  title: { fontSize: 28, fontWeight: "700", letterSpacing: -0.5 },
+  summaryRow: { flexDirection: "row", gap: 12, marginBottom: 12 },
   summaryCard: {
     flex: 1,
     borderRadius: 16,
@@ -672,7 +692,7 @@ const styles = StyleSheet.create({
     padding: 14,
     gap: 6,
   },
-  summaryValue: { fontSize: 20, fontWeight: '800' },
+  summaryValue: { fontSize: 20, fontWeight: "800" },
   incomeRef: {
     borderRadius: 12,
     borderWidth: 1,
@@ -681,7 +701,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   categorySection: { marginBottom: 16, gap: 8 },
-  categoryChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  categoryChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   catChip: {
     borderRadius: 10,
     borderWidth: 1,
@@ -689,18 +709,18 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   progressSection: { marginBottom: 16, gap: 6 },
-  progressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
-  progressFill: { height: '100%', borderRadius: 3 },
+  progressTrack: { height: 6, borderRadius: 3, overflow: "hidden" },
+  progressFill: { height: "100%", borderRadius: 3 },
   listSection: { marginBottom: 16, gap: 8 },
   empty: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: 12,
     paddingTop: 60,
   },
   expenseRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     borderRadius: 12,
     borderWidth: 1,
@@ -708,15 +728,15 @@ const styles = StyleSheet.create({
   },
   checkContainer: { padding: 4 },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 100,
     right: 24,
     width: 56,
     height: 56,
     borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -730,15 +750,15 @@ const styles = StyleSheet.create({
   },
   inputWrapper: { borderRadius: 12, borderWidth: 1 },
   catSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     borderRadius: 12,
     borderWidth: 1,
     paddingHorizontal: 18,
     paddingVertical: 14,
   },
-  buttonRow: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  buttonRow: { flexDirection: "row", gap: 12, marginTop: 8 },
   catSheetContent: {
     flex: 1,
     paddingHorizontal: 24,
@@ -746,9 +766,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   catRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     borderRadius: 12,
     borderWidth: 1,
     paddingHorizontal: 16,

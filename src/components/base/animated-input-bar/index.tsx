@@ -1,4 +1,5 @@
 /* eslint-disable react/display-name */
+import { neutral } from "@/theme/colors";
 import { maskCurrency } from "@/utils/helpers";
 import { BlurView, type BlurViewProps } from "expo-blur";
 import React, { memo, useCallback, useEffect, useState } from "react";
@@ -291,12 +292,12 @@ const styles = StyleSheet.create({
   },
   character: {
     fontSize: 16,
-    color: "#71717a",
+    color: neutral[500],
     fontWeight: "400",
   },
   input: {
     fontSize: 16,
-    color: "#fafafa",
+    color: neutral[50],
     paddingVertical: 0,
     fontWeight: "400",
   },

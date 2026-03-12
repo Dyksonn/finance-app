@@ -1,4 +1,5 @@
 // @ts-check
+import { useThemeColors } from "@/components/organisms/theme-switch/hooks";
 import React, { memo, useEffect } from "react";
 import {
   Pressable,
@@ -28,7 +29,7 @@ export const Button: React.FC<IButton> & React.FunctionComponent<IButton> =
       onPress,
       width = 200,
       height = 48,
-      backgroundColor = "#fff",
+      backgroundColor: bgProp,
       loadingText = "Loading...",
       loadingTextColor = "white",
       loadingTextSize = 16,
@@ -41,8 +42,12 @@ export const Button: React.FC<IButton> & React.FunctionComponent<IButton> =
       disabled = false,
       showLoadingIndicator = false,
       renderLoadingIndicator,
-      loadingTextBackgroundColor = "#cacaca",
-    }: IButton): React.ReactNode & React.JSX.Element & React.ReactElement => {
+      loadingTextBackgroundColor: loadingBgProp,
+    }: IButton): React.ReactNode &     React.JSX.Element & React.ReactElement => {
+      const colors = useThemeColors();
+      const backgroundColor = bgProp ?? colors.background;
+      const loadingTextBackgroundColor =
+        loadingBgProp ?? colors.muted;
       const animationProgress = useSharedValue<number>(isLoading ? 1 : 0);
       const scaleValue = useSharedValue<number>(1);
 
@@ -93,7 +98,7 @@ export const Button: React.FC<IButton> & React.FunctionComponent<IButton> =
         const bgColor = interpolateColor(
           animationProgress.value,
           [0, 1],
-          [backgroundColor, loadingTextBackgroundColor!],
+          [backgroundColor, loadingTextBackgroundColor],
         );
         return {
           transform: [{ scale: scaleValue.value }],
@@ -129,7 +134,7 @@ export const Button: React.FC<IButton> & React.FunctionComponent<IButton> =
                 renderLoadingIndicator()
               ) : (
                 <Animated.View style={{ marginRight: loadingText ? 8 : 0 }}>
-                  <ActivityIndicator color={"#000"} size={"small"} />
+                  <ActivityIndicator color={colors.foreground} size={"small"} />
                 </Animated.View>
               ))}
             <Animated.Text

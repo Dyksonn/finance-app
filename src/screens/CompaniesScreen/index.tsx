@@ -21,17 +21,17 @@ import {
   numberToMasked,
   parseMaskedCurrency,
 } from "@/utils/helpers";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // ── Form state ────────────────────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ const EMPTY_FORM: FormState = {
 
 // ── Screen ────────────────────────────────────────────────────────────────
 
-export default function EmpresasScreen() {
+export default function CompaniesScreen() {
   const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetMethods>(null);
 
@@ -370,7 +370,7 @@ export default function EmpresasScreen() {
         <FadeText
           inputs={["+"]}
           fontSize={28}
-          color="#fff"
+          color={colors.primaryForeground}
           fontWeight="300"
           wordDelay={0}
           duration={0}
@@ -506,7 +506,7 @@ export default function EmpresasScreen() {
               <FadeText
                 inputs={[editingId ? "Salvar Alterações" : "Adicionar Empresa"]}
                 fontSize={14}
-                color="#fff"
+                color={colors.primaryForeground}
                 fontWeight="700"
                 wordDelay={0}
                 duration={0}

@@ -1,16 +1,17 @@
+/* eslint-disable react/display-name */
 import React, {
   createContext,
-  useContext,
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
   memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import { StyleSheet, ViewStyle } from "react-native";
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { BottomSheetMethods } from "../bottom-sheet/types";

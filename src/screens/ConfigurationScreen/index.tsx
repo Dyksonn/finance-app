@@ -1,25 +1,26 @@
-import { StyleSheet, View, Alert, SafeAreaView, ScrollView } from 'react-native';
-import { FadeText } from '@/components/organisms/fade-text';
-import { StaggeredText } from '@/components/organisms/animated-text';
-import { Button } from '@/components/base/button';
-import { useTheme } from '@/components/organisms/theme-switch/hooks';
-import { clearAllData } from '@/storage/asyncStorage';
+import { Button } from "@/components/base/button";
+import { StaggeredText } from "@/components/organisms/animated-text";
+import { FadeText } from "@/components/organisms/fade-text";
+import { useTheme } from "@/components/organisms/theme-switch/hooks";
+import { clearAllData } from "@/storage/asyncStorage";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ConfiguracoesScreen() {
+export default function ConfigurationScreen() {
   const { colors, toggleTheme, isDark } = useTheme();
 
   async function handleClearData() {
     Alert.alert(
-      'Limpar Todos os Dados',
-      'Esta ação é irreversível. Deseja continuar?',
+      "Limpar Todos os Dados",
+      "Esta ação é irreversível. Deseja continuar?",
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: "Cancelar", style: "cancel" },
         {
-          text: 'Limpar',
-          style: 'destructive',
+          text: "Limpar",
+          style: "destructive",
           onPress: async () => {
             await clearAllData();
-            Alert.alert('Dados apagados', 'Todos os dados foram removidos.');
+            Alert.alert("Dados apagados", "Todos os dados foram removidos.");
           },
         },
       ],
@@ -40,7 +41,7 @@ export default function ConfiguracoesScreen() {
             style={[styles.title, { color: colors.text }]}
           />
           <FadeText
-            inputs={['Ajustes e preferências do app']}
+            inputs={["Ajustes e preferências do app"]}
             fontSize={13}
             color={colors.textSecondary}
             wordDelay={80}
@@ -55,7 +56,7 @@ export default function ConfiguracoesScreen() {
           ]}
         >
           <FadeText
-            inputs={['🌗 Tema do Aplicativo']}
+            inputs={["🌗 Tema do Aplicativo"]}
             fontSize={15}
             fontWeight="600"
             color={colors.text}
@@ -64,7 +65,7 @@ export default function ConfiguracoesScreen() {
           />
           <View style={styles.themeRow}>
             <FadeText
-              inputs={[isDark ? 'Modo Escuro ativo' : 'Modo Claro ativo']}
+              inputs={[isDark ? "Modo Escuro ativo" : "Modo Claro ativo"]}
               fontSize={13}
               color={colors.textSecondary}
               wordDelay={0}
@@ -72,13 +73,13 @@ export default function ConfiguracoesScreen() {
             />
             <Button
               onPress={() => toggleTheme()}
-              backgroundColor={isDark ? colors.muted : colors.primary + '22'}
+              backgroundColor={isDark ? colors.muted : colors.primary + "22"}
               width={110}
               height={38}
               borderRadius={19}
             >
               <FadeText
-                inputs={[isDark ? '☀️ Claro' : '🌙 Escuro']}
+                inputs={[isDark ? "☀️ Claro" : "🌙 Escuro"]}
                 fontSize={13}
                 color={isDark ? colors.text : colors.primary}
                 fontWeight="600"
@@ -97,7 +98,7 @@ export default function ConfiguracoesScreen() {
           ]}
         >
           <FadeText
-            inputs={['ℹ️ Informações']}
+            inputs={["ℹ️ Informações"]}
             fontSize={15}
             fontWeight="600"
             color={colors.text}
@@ -106,9 +107,9 @@ export default function ConfiguracoesScreen() {
           />
           {(
             [
-              ['Versão', '1.0.0 MVP'],
-              ['Storage', 'AsyncStorage'],
-              ['UI Kit', 'Reactix'],
+              ["Versão", "1.0.0 MVP"],
+              ["Storage", "AsyncStorage"],
+              ["UI Kit", "Reactix"],
             ] as [string, string][]
           ).map(([label, value]) => (
             <View key={label} style={styles.infoRow}>
@@ -136,13 +137,13 @@ export default function ConfiguracoesScreen() {
           style={[
             styles.card,
             {
-              backgroundColor: colors.destructive + '0A',
-              borderColor: colors.destructive + '40',
+              backgroundColor: colors.destructive + "0A",
+              borderColor: colors.destructive + "40",
             },
           ]}
         >
           <FadeText
-            inputs={['ZONA DE PERIGO']}
+            inputs={["ZONA DE PERIGO"]}
             fontSize={11}
             fontWeight="700"
             color={colors.destructive}
@@ -151,7 +152,7 @@ export default function ConfiguracoesScreen() {
           />
           <FadeText
             inputs={[
-              'Esta ação remove todas as empresas e gastos permanentemente.',
+              "Esta ação remove todas as empresas e gastos permanentemente.",
             ]}
             fontSize={13}
             color={colors.textSecondary}
@@ -165,9 +166,9 @@ export default function ConfiguracoesScreen() {
             height={48}
           >
             <FadeText
-              inputs={['Limpar Todos os Dados']}
+              inputs={["Limpar Todos os Dados"]}
               fontSize={14}
-              color="#fff"
+              color={colors.primaryForeground}
               fontWeight="700"
               wordDelay={0}
               duration={0}
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: 24, paddingTop: 20, gap: 16 },
   header: { marginBottom: 4, gap: 6 },
-  title: { fontSize: 28, fontWeight: '700', letterSpacing: -0.5 },
+  title: { fontSize: 28, fontWeight: "700", letterSpacing: -0.5 },
   card: {
     borderRadius: 16,
     borderWidth: 1,
@@ -192,13 +193,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   themeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
